@@ -130,7 +130,7 @@ module.exports.sendMail = (req, res, next) => {
             from: process.env.EMAIL,
             to: email,
             subject: 'Réinitialisation de mot de passe',
-            html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = "https://divhunter.github.io/vowd/update_password" >réinitialisation</a></p>`
+            html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = "https://vowd-project/onrender.com/update_password" >réinitialisation</a></p>`
         }
     
         transporter.sendMail(mailOptions, (error, info) => {
