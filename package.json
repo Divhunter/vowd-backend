@@ -31,7 +31,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "node server.js"
+    "server": "node ./divhunter/server.js",
+    "start": "node server.js"
   },
   "author": "divhunter",
   "license": "ISC"
