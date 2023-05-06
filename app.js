@@ -19,6 +19,8 @@ const hpp = require('hpp');
 // Pour assainir les champs inputs des injections sql
 const mongoSanitize = require('express-mongo-sanitize');
 
+app.use('/', express.static('dist')) 
+
 // Application du logger
 app.use(morgan('dev'));
 
