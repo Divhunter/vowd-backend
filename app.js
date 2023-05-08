@@ -39,8 +39,7 @@ app.use((req, res, next) => {
     res.setHeader(
     'Access-Control-Allow-Origin',
     '*',
-    'https://vowd-project.onrender.com/', 
-    'https://vowd-project.onrender.com/updatePassword'
+    'https://vowd-project.onrender.com/'
     );
     res.setHeader(
       "Access-Control-Allow-Headers",
