@@ -123,15 +123,15 @@ module.exports.sendMail = (req, res, next) => {
             auth: {
                 user: process.env.EMAIL,
                 pass: process.env.PASSWORD
-            }
+            },
+            userId: user._id,
+            token: jwt.sign(
+                { userId: user._id },
+                'RANDOM_TOKEN_SECRET',
+                { expiresIn: '20m'}
+            )
         })
 
-        const token = jwt.sign(
-            { _id: user._id },
-            'RANDOM_TOKEN_SECRET',
-            { expiresIn: '20m'}
-        )
-    
         const mailOptions = {
             from: process.env.EMAIL,
             to: email,
