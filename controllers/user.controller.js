@@ -107,7 +107,8 @@ module.exports.login = (req, res, next) => {
 module.exports.sendMail = (req, res, next) => {
     const userName = req.body.userName
     const email = req.body.email
-    const verifUser = { userName: userName, email: email }
+    const token = req.body.token
+    const verifUser = { userName: userName, email: email, token: token }
     UserModel.findOne(verifUser) 
     if (!verifUser) {
         return res.json({ userSendError: 'Erreur d\'authentification !' }).status(401);
@@ -131,10 +132,10 @@ module.exports.sendMail = (req, res, next) => {
             from: process.env.EMAIL,
             to: email,
             subject: 'Réinitialisation de mot de passe',
-            html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe: ${process.env.CLIENT_URL}/password </p>`
+            html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe: ${process.env.CLIENT_URL}/password/${token} </p>`
         }
     
-        transporter.sendMail(mailOptions, (error, info) => {
+        transporter.sendMail(mailOptions, error => {
             if (error) {
                 res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(400)
             } 
