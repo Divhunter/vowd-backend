@@ -129,7 +129,7 @@ module.exports.sendMail = (req, res, next) => {
         const token = jwt.sign(
             { _id: user._id },
             'RANDOM_TOKEN_SECRET',
-            { expiresIn: '24h'}
+            { expiresIn: '20m'}
         )
     
         const mailOptions = {
@@ -167,7 +167,7 @@ module.exports.updatePassword = (req, res, next) => {
             const token = jwt.sign(
                 { _id: user._id },
                 'RANDOM_TOKEN_SECRET',
-                { expiresIn: '24h'}
+                { expiresIn: '20m'}
             )
             user.resetToken = token
             user.password = bcrypt.hashSync(req.body.password, 10)
