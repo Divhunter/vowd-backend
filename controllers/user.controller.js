@@ -113,13 +113,6 @@ module.exports.sendMail = (req, res, next) => {
         return res.json({ userSendError: 'Erreur d\'authentification !' }).status(401);
     } 
     else {
-        const token = jwt.sign(
-            { _id: user._id },
-            'RANDOM_TOKEN_SECRET',
-            { expiresIn: '20m'}
-        )
-        user.resetToken = token
-        user.save()
 
         const transporter = nodeMailer.createTransport({
             host: 'smtp-mail.outlook.com',
@@ -138,7 +131,7 @@ module.exports.sendMail = (req, res, next) => {
             from: process.env.EMAIL,
             to: email,
             subject: 'Réinitialisation de mot de passe',
-            html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe: https://vowd-project.onrender.com/updatePassword </p>`
+            html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe: ${process.env.CLIENT_URL}/updatePassword </p>`
         }
     
         transporter.sendMail(mailOptions, (error, info) => {
