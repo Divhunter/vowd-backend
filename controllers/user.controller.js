@@ -118,7 +118,6 @@ module.exports.sendMail = (req, res, next) => {
             'RANDOM_TOKEN_SECRET',
             { expiresIn: '20m'}
         )
-        user.save()
 
         const transporter = nodeMailer.createTransport({
             host: 'smtp-mail.outlook.com',
