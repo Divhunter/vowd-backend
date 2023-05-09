@@ -107,13 +107,18 @@ module.exports.login = (req, res, next) => {
 module.exports.sendMail = (req, res, next) => {
     const userName = req.body.userName
     const email = req.body.email
-    const token = req.body.token
-    const verifUser = { userName: userName, email: email, token: token }
+    const verifUser = { userName: userName, email: email }
     UserModel.findOne(verifUser) 
     if (!verifUser) {
         return res.json({ userSendError: 'Erreur d\'authentification !' }).status(401);
     } 
     else {
+        const token = jwt.sign(
+            { _id: user._id },
+            'RANDOM_TOKEN_SECRET',
+            { expiresIn: '20m'}
+        )
+        user.save()
 
         const transporter = nodeMailer.createTransport({
             host: 'smtp-mail.outlook.com',
@@ -132,7 +137,7 @@ module.exports.sendMail = (req, res, next) => {
             from: process.env.EMAIL,
             to: email,
             subject: 'Réinitialisation de mot de passe',
-            html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe: ${process.env.CLIENT_URL}/password/${userName} </p>`
+            html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe: ${process.env.CLIENT_URL}/password/${req.body.token} </p>`
         }
     
         transporter.sendMail(mailOptions, error => {
