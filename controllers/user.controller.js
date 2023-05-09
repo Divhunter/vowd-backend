@@ -107,7 +107,7 @@ module.exports.login = (req, res, next) => {
 module.exports.sendMail = (req, res, next) => {
     const userName = req.body.userName
     const email = req.body.email
-    const userId = req.body._id
+    const userId = res.data.userId
     const verifUser = { userName: userName, email: email }
     UserModel.findOne(verifUser) 
     if (!verifUser) {
