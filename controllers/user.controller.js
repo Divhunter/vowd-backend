@@ -107,7 +107,6 @@ module.exports.login = (req, res, next) => {
 module.exports.sendMail = (req, res, next) => {
     const userName = req.body.userName
     const email = req.body.email
-    const userId = res.data.userId
     const verifUser = { userName: userName, email: email }
     UserModel.findOne(verifUser) 
     if (!verifUser) {
@@ -132,7 +131,7 @@ module.exports.sendMail = (req, res, next) => {
             from: process.env.EMAIL,
             to: email,
             subject: 'Réinitialisation de mot de passe',
-            html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe: ${process.env.CLIENT_URL}/password/${userId} </p>`
+            html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe: ${process.env.CLIENT_URL}/password </p>`
         }
     
         transporter.sendMail(mailOptions, error => {
