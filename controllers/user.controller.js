@@ -108,7 +108,7 @@ module.exports.sendMail = (req, res, next) => {
     const userName = req.body.userName
     const email = req.body.email
     const userId = res.data.userId
-    const verifUser = { userName: userName, email: email, userId: userId }
+    const verifUser = { userName: userName, email: email }
     UserModel.findOne(verifUser) 
     if (!verifUser) {
         return res.json({ userSendError: 'Erreur d\'authentification !' }).status(401);
