@@ -38,7 +38,7 @@ app.use(express.urlencoded({extended: false}));
 app.use((req, res, next) => {
     res.setHeader(
     'Access-Control-Allow-Origin',
-    '*'
+    'https://vowd-project.onrender.com'
     );
     res.setHeader(
       "Access-Control-Allow-Headers",
