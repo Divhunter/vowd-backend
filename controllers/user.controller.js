@@ -54,15 +54,15 @@ module.exports.register = (req, res, next) => {
         });
         if (!regex.test(req.body.userName)) {
             user.remove();
-            res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
+            return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
         else if (!mailValidator.validate(req.body.email)) {
             user.remove();
-            res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
+            return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
         } 
         else if (!schema.validate(req.body.password)) {
             user.remove();
-            res.json({ passwordRegError: 'Le password n\'est pas valide !' }).status(400); // Accès à la requête refusée
+            return res.json({ passwordRegError: 'Le password n\'est pas valide !' }).status(400); // Accès à la requête refusée
         }
         else {
             user.save()
