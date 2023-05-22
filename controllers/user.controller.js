@@ -29,7 +29,7 @@ const regex = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9]+)*
 var schema = new passwordValidator();
 schema
     .is()
-    .min(6)
+    .min(10)
     .is()
     .max(20)
     .has()
@@ -45,33 +45,34 @@ schema
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
-    bcrypt.hash(req.body.password, 10)
-    .then(hash => {
-        const user = new UserModel({
-        userName: req.body.userName,  
-        email: req.body.email,
-        password: hash
-        });
-        if (!regex.test(req.body.userName)) {
-            user.remove();
-            return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
-        } 
-        else if (!mailValidator.validate(req.body.email)) {
-            user.remove();
-            return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
-        } 
-        else if (!schema.validate(req.body.password)) {
-            user.remove();
-            return res.json({ passwordRegError: 'Le password n\'est pas valide !' }).status(400); // Accès à la requête refusée
-        }
-        else {
-            user.save()
-            .then(() => res.json({  userId: user._id,
-                                    message:  user.userName +', votre compte est crée !' }).status(200))
-            .catch(error => res.json({ userRegError: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(400));
-        }
-    })
-    .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+    if (!regex.test(req.body.userName)) {
+        user.remove();
+        return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
+    } 
+    else if (!mailValidator.validate(req.body.email)) {
+        user.remove();
+        return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
+    } 
+    else if (!schema.validate(req.body.password)) {
+        user.remove();
+        return res.json({ passwordRegError: 'Le password doit contenir 10 à 20 caractères dont au moins 1 majuscule et 1 minuscule ainsi que 1 chiffre !' }).status(400); // Accès à la requête refusée
+    }
+    else {
+        bcrypt
+        .hash(req.body.password, 10) 
+        .then((hash) => {
+            const user = new UserModel({
+            userName: req.body.userName,  
+            email: req.body.email,
+            password: hash
+            });
+        user.save()
+        .then(() => res.json({  userId: user._id,
+                                message:  user.userName +', votre compte est crée !' }).status(200))
+        .catch(error => res.json({ userRegError: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(400));
+        })
+        .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+    }
 };
 
 //=========================================================================================
