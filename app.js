@@ -37,8 +37,7 @@ app.use(express.urlencoded({extended: false}));
 // Définition des entêtes CORS
 app.use((req, res, next) => {
     res.setHeader(
-    'Access-Control-Allow-Origin',
-    'https://vowd-project.onrender.com'
+    process.env.CLIENT_URL
     );
     res.setHeader(
       "Access-Control-Allow-Headers",
