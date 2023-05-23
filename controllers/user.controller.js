@@ -46,7 +46,7 @@ module.exports.register = (req, res, next) => {
         if (!regexName.test(req.body.userName)) {
             return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
-        else if (!regexEmail.validate(req.body.email)) {
+        else if (!regexEmail.test(req.body.email)) {
             return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
         } 
         else if (!schema.validate(req.body.password)) {
