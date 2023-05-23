@@ -24,7 +24,7 @@ const regexName = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9
 const regexEmail = /^\w+([\.-_]?\w+)*@\w+([\.-_]?\w+)*(\.\w{2,3})+$/;
 
 // Création d'un schéma de validation pour le password
-let schema = new passwordValidator();
+/*let schema = new passwordValidator();
 schema
     .is()
     .min(10)
@@ -38,7 +38,7 @@ schema
     .has()
     .lowercase()
     .has()
-    .digits(1);
+    .digits(1);*/
 
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
