@@ -49,8 +49,9 @@ module.exports.register = (req, res, next) => {
     .then(user => {
         if (user) {
             return res.json({ userRegError: 'Pseudo et/ou email déjà utilisé !' }).status(401);
-        } else if (!regex.test(req.body.userName)) {
-                return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
+        } 
+        else if (!regex.test(req.body.userName)) {
+            return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
         else if (!mailValidator.validate(req.body.email)) {
             return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
