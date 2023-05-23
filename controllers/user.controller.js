@@ -46,10 +46,7 @@ schema
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
     UserModel.findOne({ userName: req.body.userName, email: req.body.email })
-        if (userName || email) {
-            return res.json({ userLogError: 'Pseudo et/ou email incorrecte(s) !' }).status(401);
-        }
-        else if (!regex.test(req.body.userName)) {
+        if (!regex.test(req.body.userName)) {
             return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
         else if (!mailValidator.validate(req.body.email)) {
