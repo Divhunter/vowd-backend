@@ -13,18 +13,20 @@ const jwt = require('jsonwebtoken');
 // Pour envoyer un email
 const nodeMailer = require('nodemailer')
 
+// Importation de mailValidator (Sécurité)
+// Pour s'assurer que l'email et bien un email
+const mailValidator = require("email-validator");
+
 // Importation de passwordValidator (Sécurité)
 // Pour s'assurer que le password est valide
 const passwordValidator = require("password-validator");
 
 // Création du regex (Sécurité)
 // Pour filtrer les chaînes de caractères et bannir les caractères non autorisés
-const regexName = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9]+)*$/;
-// Pour s'assurer que l'email et bien un email
-const regexEmail = /^\w+([\.-_]?\w+)*@\w+([\.-_]?\w+)*(\.\w{2,3})+$/;
+const regex = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9]+)*$/;
 
 // Création d'un schéma de validation pour le password
-/*let schema = new passwordValidator();
+var schema = new passwordValidator();
 schema
     .is()
     .min(10)
@@ -38,19 +40,19 @@ schema
     .has()
     .lowercase()
     .has()
-    .digits(1);*/
+    .digits(1);
 
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
-        if (!regexName.test(req.body.userName)) {
-            return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
+        if (!regex.test(req.body.userName)) {
+            res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
-        else if (!regexEmail.test(req.body.email)) {
-            return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
+        else if (!mailValidator.validate(req.body.email)) {
+            res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
         } 
         else if (!schema.validate(req.body.password)) {
-            return res.json({ passwordRegError: 'Le password n\'est pas valide !' }).status(400); // Accès à la requête refusée
+            res.json({ passwordRegError: 'Le password n\'est pas valide !' }).status(400); // Accès à la requête refusée
         }
         else {
             bcrypt.hash(req.body.password, 10)
