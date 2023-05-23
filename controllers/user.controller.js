@@ -50,15 +50,12 @@ module.exports.register = (req, res, next) => {
             return res.json({ userLogError: 'Pseudo et/ou email incorrecte(s) !' }).status(401);
         }
         else if (!regex.test(req.body.userName)) {
-            user.remove();
             return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
         else if (!mailValidator.validate(req.body.email)) {
-            user.remove();
             return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
         } 
         else if (!schema.validate(req.body.password)) {
-            user.remove();
             return res.json({ passwordRegError: 'Le password n\'est pas valide !' }).status(400); // Accès à la requête refusée
         }
         else {
