@@ -45,29 +45,31 @@ schema
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
-    !regex.test(req.body.userName)
-    .then(() => res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400)); // Accès à la requête refusée )
-    
-    !mailValidator.validate(req.body.email)
-    .then(() => res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400)); // Accès à la requête refusée
-    
-    !schema.validate(req.body.password)
-    .then(() => res.json({ passwordRegError: 'Le password n\'est pas valide !' }).status(400)); // Accès à la requête refusée
-    
-    bcrypt.hash(req.body.password, 10)
-    .then(hash => {
-        const user = new UserModel({
-        userName: req.body.userName,  
-        email: req.body.email,
-        password: hash
-    });
-    user.save()
-    .then(() => res.json({  userId: user._id,
-                            message:  user.userName +', votre compte est crée !' }).status(200))
-    .catch(error => res.json({ userRegError: 'Pseudo et/ou Email déjà utilisés !' }).status(400));
-    })
-    .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
-}
+        if (!regex.test(req.body.userName)) {
+            return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
+        } 
+        else if (!mailValidator.validate(req.body.email)) {
+            return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
+        } 
+        else if (!schema.validate(req.body.password)) {
+            return res.json({ passwordRegError: 'Le password n\'est pas valide !' }).status(400); // Accès à la requête refusée
+        }
+        else {
+            bcrypt.hash(req.body.password, 10)
+            .then(hash => {
+                const user = new UserModel({
+                userName: req.body.userName,  
+                email: req.body.email,
+                password: hash
+            });
+            user.save()
+            .then(() => res.json({  userId: user._id,
+                                    message:  user.userName +', votre compte est crée !' }).status(200))
+            .catch(error => res.json({ userRegError: 'Pseudo et/ou Email déjà utilisés !' }).status(400));
+        })
+        .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+    }
+};
 
 //=========================================================================================
 // Relatif à la connection d'un compte utilisateur
