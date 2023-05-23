@@ -13,20 +13,18 @@ const jwt = require('jsonwebtoken');
 // Pour envoyer un email
 const nodeMailer = require('nodemailer')
 
-// Importation de mailValidator (Sécurité)
-// Pour s'assurer que l'email et bien un email
-const mailValidator = require("email-validator");
-
 // Importation de passwordValidator (Sécurité)
 // Pour s'assurer que le password est valide
 const passwordValidator = require("password-validator");
 
 // Création du regex (Sécurité)
 // Pour filtrer les chaînes de caractères et bannir les caractères non autorisés
-const regex = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9]+)*$/;
+const regexName = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9]+)*$/;
+// Pour s'assurer que l'email et bien un email
+const regexEmail = /^\w+([\.-_]?\w+)*@\w+([\.-_]?\w+)*(\.\w{2,3})+$/;
 
 // Création d'un schéma de validation pour le password
-var schema = new passwordValidator();
+let schema = new passwordValidator();
 schema
     .is()
     .min(10)
@@ -45,10 +43,10 @@ schema
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
-        if (!regex.test(req.body.userName)) {
+        if (!regexName.test(req.body.userName)) {
             return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
-        else if (!mailValidator.validate(req.body.email)) {
+        else if (!regexEmail.validate(req.body.email)) {
             return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
         } 
         else if (!schema.validate(req.body.password)) {
