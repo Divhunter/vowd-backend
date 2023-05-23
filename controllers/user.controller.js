@@ -45,12 +45,7 @@ schema
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
-    UserModel.findOne({ userName: req.body.userName, email: req.body.email })
-    .then(user => {
-        if (user) {
-            return res.json({ userRegError: 'Pseudo et/ou email déjà utilisé !' }).status(401);
-        } 
-        else if (!regex.test(req.body.userName)) {
+        if (!regex.test(req.body.userName)) {
             return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
         else if (!mailValidator.validate(req.body.email)) {
@@ -70,12 +65,10 @@ module.exports.register = (req, res, next) => {
             user.save()
             .then(() => res.json({  userId: user._id,
                                     message:  user.userName +', votre compte est crée !' }).status(200))
-            .catch(error => res.json({ userRegError: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(400));
-            })
-            .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
-        }
-    })
-    .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+            .catch(error => res.json({ userRegError: 'Pseudo et/ou Email déjà utilisés !' }).status(400));
+        })
+        .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+    }
 };
 
 //=========================================================================================
