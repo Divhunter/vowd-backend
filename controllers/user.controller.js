@@ -48,28 +48,27 @@ module.exports.register = (req, res, next) => {
         if (!regex.test(req.body.userName)) {
             return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
-        else if (!mailValidator.validate(req.body.email) === req.body.email) {
+        if (!mailValidator.validate(req.body.email)) {
             return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
         } 
-        else if (!schema.validate(req.body.password) === req.body.password) {
+        if (!schema.validate(req.body.password)) {
             return res.json({ passwordRegError: 'Le password doit contenir 10à 20 caractères dont une lettre majuscule et un chiffre !' }).status(400); // Accès à la requête refusée
         }
-        else {
-            bcrypt.hash(req.body.password, 10)
-            .then(hash => {
-                const user = new UserModel({
-                userName: req.body.userName,  
-                email: req.body.email,
-                password: hash
-            });
-            user.save()
-            .then(() => res.json({  userId: user._id,
-                                    message:  user.userName +', votre compte est crée !' }).status(200))
-            .catch(error => res.json({ userRegError: 'Pseudo et/ou Email déjà utilisés !' }).status(400));
-        })
-        .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
-    }
-};
+        bcrypt.hash(req.body.password, 10)
+        .then(hash => {
+            const user = new UserModel({
+            userName: req.body.userName,  
+            email: req.body.email,
+            password: hash
+        });
+        user.save()
+        .then(() => res.json({  userId: user._id,
+                                message:  user.userName +', votre compte est crée !' }).status(200))
+        .catch(error => res.json({ userRegError: 'Pseudo et/ou Email déjà utilisés !' }).status(400));
+    })
+    .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+}
+
 
 //=========================================================================================
 // Relatif à la connection d'un compte utilisateur
