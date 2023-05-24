@@ -36,7 +36,7 @@ schema
     .not()
     .spaces()
     .has()
-    .uppercase()
+    .uppercase(1)
     .has()
     .lowercase()
     .has()
@@ -45,20 +45,22 @@ schema
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
+        let userError = new UserModel({
+        userName: req.body.userName,  
+        email: req.body.email,
+        password: req.body.password
+        });
         if (!regex.test(req.body.userName)) {
-            throw {
-            userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' 
-            }
+            userError.remove();
+            return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
         else if (!mailValidator.validate(req.body.email)) {
-            throw {
-            emailRegError: 'L\'adresse mail n\'est pas valide !'
-            }
+            userError.remove();
+            return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
         } 
         else if (!schema.validate(req.body.password)) {
-            throw {
-            passwordRegError: 'Le password n\'est pas valide !'
-            }
+            userError.remove();
+            return res.json({ passwordRegError: 'Le password doit contenir 10à 20 caractères dont une lettre majuscule et un chiffre !' }).status(400); // Accès à la requête refusée
         }
         else {
             bcrypt.hash(req.body.password, 10)
