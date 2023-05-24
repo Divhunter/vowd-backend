@@ -45,21 +45,13 @@ schema
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
-        let userError = new UserModel({
-        userName: req.body.userName,  
-        email: req.body.email,
-        password: req.body.password
-        });
         if (!regex.test(req.body.userName)) {
-            userError.remove();
             return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
-        else if (!mailValidator.validate(req.body.email)) {
-            userError.remove();
+        else if (!mailValidator.validate(req.body.email) === req.body.email) {
             return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
         } 
-        else if (!schema.validate(req.body.password)) {
-            userError.remove();
+        else if (!schema.validate(req.body.password) === req.body.password) {
             return res.json({ passwordRegError: 'Le password doit contenir 10à 20 caractères dont une lettre majuscule et un chiffre !' }).status(400); // Accès à la requête refusée
         }
         else {
