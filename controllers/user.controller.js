@@ -33,7 +33,7 @@ passwordSchema
 .has().uppercase() // Requière au moins une lettre majuscule
 .has().lowercase() // Requière au moins une lettre minuscule
 .has().digits()    // Requière au moins un chiffre
-.has().symbols()   // Requière au moins un caractère spécial
+.has().symbols();   // Requière au moins un caractère spécial
 
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
