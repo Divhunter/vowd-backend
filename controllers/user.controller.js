@@ -38,7 +38,12 @@ passwordSchema
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
-        if (!regexUserName.test(req.body.userName)) {
+    UserModel.findOne({ userName: req.body.userName, email: req.body.email })
+    .then(user => {
+        if (user) {
+            return res.json({ userRegError: 'Pseudo et/ou Email déjà utilisés !' }).status(401);
+        }
+        else if (!regexUserName.test(req.body.userName)) {
             return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
         else if (!regexEmail.test(req.body.email)) {
@@ -48,20 +53,21 @@ module.exports.register = (req, res, next) => {
             return res.json({ passwordRegError: 'Le mot de passe doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial !' }).status(400); // Accès à la requête refusée
         } 
         else {
-        bcrypt.hash(req.body.password, 10)
-        .then(hash => {
-            const user = new UserModel({
-            userName: req.body.userName,  
-            email: req.body.email,
-            password: hash
-        });
-        user.save()
-        .then(() => res.json({  userId: user._id,
-                                message:  user.userName +', votre compte est crée !' }).status(200))
-        .catch(error => res.json({ userRegError: 'Pseudo et/ou Email déjà utilisés !' }).status(400));
-        })
-    .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
-    }
+            bcrypt.hash(req.body.password, 10)
+            .then(hash => {
+                const user = new UserModel({
+                userName: req.body.userName,  
+                email: req.body.email,
+                password: hash
+            });
+            user.save()
+            .then(() => res.json({  userId: user._id,
+                                    message:  user.userName +', votre compte est crée !' }).status(200))
+            .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+            })
+        .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+        }
+    })
 }
 
 
