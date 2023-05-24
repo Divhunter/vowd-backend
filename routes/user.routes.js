@@ -8,8 +8,8 @@ const limit = require('../middleware/logLimit');
 const { route } = require('./post.routes');
 
 // Réglage des contrôleurs
-router.post('/register', emailValidator, passwordValidator, userCtrl.register);
-router.post('/login', limit.limiter, passwordValidator, userCtrl.login);
+router.post('/register', userCtrl.register);
+router.post('/login', limit.limiter, userCtrl.login);
 router.post('/sendMail', userCtrl.sendMail);
 router.post('/updatePassword', userCtrl.updatePassword);
 
