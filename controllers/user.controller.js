@@ -46,13 +46,19 @@ schema
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
         if (!regex.test(req.body.userName)) {
-            return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
+            throw {
+            userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' 
+            }
         } 
         else if (!mailValidator.validate(req.body.email)) {
-            return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
+            throw {
+            emailRegError: 'L\'adresse mail n\'est pas valide !'
+            }
         } 
         else if (!schema.validate(req.body.password)) {
-            return res.json({ passwordRegError: 'Le password n\'est pas valide !' }).status(400); // Accès à la requête refusée
+            throw {
+            passwordRegError: 'Le password n\'est pas valide !'
+            }
         }
         else {
             bcrypt.hash(req.body.password, 10)
