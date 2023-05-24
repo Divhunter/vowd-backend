@@ -41,12 +41,13 @@ module.exports.register = (req, res, next) => {
         if (!regexUserName.test(req.body.userName)) {
             return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
-        if (!regexEmail.test(req.body.email)) {
+        else if (!regexEmail.test(req.body.email)) {
             return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
         } 
-        if (!passwordSchema.validate(req.body.password)) {
-            return res.json({ passwordRegError: 'Le password doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial !' }).status(400); // Accès à la requête refusée
-        }
+        else if (!passwordSchema.validate(req.body.password)) {
+            return res.json({ passwordRegError: 'Le mot de passe doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial !' }).status(400); // Accès à la requête refusée
+        } 
+        else {
         bcrypt.hash(req.body.password, 10)
         .then(hash => {
             const user = new UserModel({
@@ -58,8 +59,9 @@ module.exports.register = (req, res, next) => {
         .then(() => res.json({  userId: user._id,
                                 message:  user.userName +', votre compte est crée !' }).status(200))
         .catch(error => res.json({ userRegError: 'Pseudo et/ou Email déjà utilisés !' }).status(400));
-    })
+        })
     .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+    }
 }
 
 
