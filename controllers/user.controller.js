@@ -52,7 +52,7 @@ module.exports.register = (req, res, next) => {
             return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
         } 
         if (!schema.validate(req.body.password)) {
-            return res.json({ passwordRegError: 'Le password doit contenir 10à 20 caractères dont une lettre majuscule et un chiffre !' }).status(400); // Accès à la requête refusée
+            return res.json({ passwordRegError: 'Le password doit contenir 10 à 20 caractères dont une lettre majuscule et un chiffre !' }).status(400); // Accès à la requête refusée
         }
         bcrypt.hash(req.body.password, 10)
         .then(hash => {
