@@ -45,25 +45,25 @@ schema
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
-        if (!regex.test(req.body.userName)) {
+        if (!regex.test(req.body.userNameReg)) {
             return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
         } 
-        if (!mailValidator.validate(req.body.email)) {
+        if (!mailValidator.validate(req.body.emailReg)) {
             return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
         } 
-        if (!schema.validate(req.body.password)) {
+        if (!schema.validate(req.body.passwordReg)) {
             return res.json({ passwordRegError: 'Le password doit contenir 10 à 20 caractères dont une lettre majuscule et un chiffre !' }).status(400); // Accès à la requête refusée
         }
-        bcrypt.hash(req.body.password, 10)
+        bcrypt.hash(req.body.passwordReg, 10)
         .then(hash => {
             const user = new UserModel({
-            userName: req.body.userName,  
-            email: req.body.email,
+            userName: req.body.userNameReg,  
+            email: req.body.emailReg,
             password: hash
         });
         user.save()
         .then(() => res.json({  userId: user._id,
-                                message:  user.userName +', votre compte est crée !' }).status(200))
+                                message:  user.userNameReg +', votre compte est crée !' }).status(200))
         .catch(error => res.json({ userRegError: 'Pseudo et/ou Email déjà utilisés !' }).status(400));
     })
     .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
