@@ -32,12 +32,14 @@ const regexUserName = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçô�
 // Création d'un schéma de validation pour le password
 const passwordSchema = new passwordValidator();
 passwordSchema
-.is().min(8)       // Minimum 8 caractères
-.is().max(20)      // Maximum 20 caractères
-.has().uppercase() // Requière au moins une lettre majuscule
-.has().lowercase() // Requière au moins une lettre minuscule
-.has().digits()    // Requière au moins un chiffre
-.has().symbols();  // Requière au moins un caractère spécial
+.is().min(8)            // Minimum 8 caractères
+.is().max(20)           // Maximum 20 caractères
+.has().uppercase()      // Requière au moins une lettre majuscule
+.has().lowercase()      // Requière au moins une lettre minuscule
+.has().digits()         // Requière au moins un chiffre
+.has().symbols()        // Requière au moins un caractère spécial
+.has().not().spaces()   // Espace blanc non autorisé
+.is().not().oneOf(['Passw0rd', 'Password123', 'Azerty123']); 
 
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
