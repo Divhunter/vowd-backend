@@ -13,6 +13,10 @@ const jwt = require('jsonwebtoken');
 // Pour envoyer un email
 const nodeMailer = require('nodemailer')
 
+// Importation de passwordValidator (Sécurité)
+// Pour s'assurer que le password est valide
+const passwordValidator = require('password-validator');
+
 // Création du regex (Sécurité)
 // Pour validation de la chaîne de caractère relative à l'adresse mail 
 const regexEmail = /^\w+([\.-_]?\w+)*@\w+([\.-_]?\w+)*(\.\w{2,3})+$/;
@@ -22,7 +26,7 @@ const regexEmail = /^\w+([\.-_]?\w+)*@\w+([\.-_]?\w+)*(\.\w{2,3})+$/;
 const regexUserName = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9]+)*$/;
 
 // Création d'un schéma de validation pour le password
-let passwordSchema = 
+const passwordSchema = new passwordValidator();
 passwordSchema
 .is().min(8)            // Minimum 8 caractères
 .is().max(20)           // Maximum 20 caractères
