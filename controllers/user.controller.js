@@ -104,42 +104,39 @@ module.exports.login = (req, res, next) => {
 
 module.exports.sendMail = (req, res, next) => {
     UserModel.findOne({ userName: req.body.userName, email: req.body.email })
-    .then(user => {
-        if (!user) {
-            return res.json({ userSendError: 'Ce compte n\'existe pas !' }).status(401);
-        }
-        else {
-            const transporter = nodeMailer.createTransport({
-                host: 'smtp-mail.outlook.com',
-                secureConnection: false,
-                port: 587,
-                tls: {
-                    ciphers:"SSLv3"
-                },
-                auth: {
-                    user: process.env.EMAIL,
-                    pass: process.env.PASSWORD
-                }
-            })
-        
-            const mailOptions = {
-                from: process.env.EMAIL,
-                to: email,
-                subject: 'Réinitialisation de mot de passe',
-                html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe: ${process.env.CLIENT_URL}/password </p>`
+    if (!user) {
+        return res.json({ userSendError: 'Ce compte n\'existe pas !' }).status(401);
+    }
+    else {
+        const transporter = nodeMailer.createTransport({
+            host: 'smtp-mail.outlook.com',
+            secureConnection: false,
+            port: 587,
+            tls: {
+                ciphers:"SSLv3"
+            },
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.PASSWORD
             }
-        
-            transporter.sendMail(mailOptions, error => {
-                if (error) {
-                    res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(400)
-                } 
-                else {
-                    res.json({ messageSend: userName +', nous traitons votre demande !' }).status(201)
-                };
-            })
-        };
-    })
-    .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+        })
+    
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: 'Réinitialisation de mot de passe',
+            html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe: ${process.env.CLIENT_URL}/password </p>`
+        }
+    
+        transporter.sendMail(mailOptions, error => {
+            if (error) {
+                res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(400)
+            } 
+            else {
+                res.json({ message: userName +', nous traitons votre demande !' }).status(201)
+            };
+        })
+    };
 }
 
 
