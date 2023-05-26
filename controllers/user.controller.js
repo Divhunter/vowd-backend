@@ -22,8 +22,8 @@ const regexEmail = /^\w+([\.-_]?\w+)*@\w+([\.-_]?\w+)*(\.\w{2,3})+$/;
 const regexUserName = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9]+)*$/;
 
 // Création d'un schéma de validation pour le password
-const passwordSchema = 
-schema
+let passwordSchema = 
+passwordSchema
 .is().min(8)            // Minimum 8 caractères
 .is().max(20)           // Maximum 20 caractères
 .has().uppercase()      // Requière au moins une lettre majuscule
@@ -45,7 +45,7 @@ module.exports.register = (req, res, next) => {
             return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400);
         } 
         else if (!regexEmail.test(req.body.email)) {
-            return res.json({ userNameRegError: 'L\'adresse mail n\'est pas valide !' }).status(400);
+            return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400);
         } 
         else if (!passwordSchema.validate(req.body.password)) {
             return res.json({ passwordRegError:'Le mot de passe doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial !' }).status(400);
