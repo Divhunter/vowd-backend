@@ -15,11 +15,15 @@ const nodeMailer = require('nodemailer')
 
 // Importation de mailValidator (Sécurité)
 // Pour s'assurer que l'email et bien un email
-const mailValidator = require("email-validator");
+const mailValidator = require('email-validator');
 
 // Importation de passwordValidator (Sécurité)
 // Pour s'assurer que le password est valide
-const passwordValidator = require("password-validator");
+const passwordValidator = require('password-validator');
+
+const mongoMask = require('mongo-mask');
+
+const session = require('express-session');
 
 // Création du regex (Sécurité)
 // Pour filtrer les chaînes de caractères et bannir les caractères non autorisés
@@ -41,14 +45,18 @@ passwordSchema
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
     if (!regexUserName.test(req.body.userName)) {
-        return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
+        return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); 
     } 
     else if (!mailValidator.validate(req.body.email)) {
-        return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
-    } 
+        throw {
+        error: 'L\'adresse mail n\'est pas valide !'
+        } 
+    }
     else if (!passwordSchema.validate(req.body.password)) {
-        return res.json({ passwordRegError: 'Le mot de passe doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial !' }).status(400); // Accès à la requête refusée
-    } 
+        throw {
+        error: 'Le mot de passe doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial !' 
+        } 
+    }
     else {
         bcrypt.hash(req.body.password, 10)
         .then(hash => {

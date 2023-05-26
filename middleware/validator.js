@@ -15,9 +15,9 @@ const validate = (req, res, next) => {
       [err.param]: 'Le mot de passe doit faire au moins 6 caractères',
     })
   );
-  return res.status(422).json({
+  return json({
     errors: extractedErrors,
-  });
+  }).res.status(422);
 };
 
 module.exports = {
