@@ -128,12 +128,9 @@ module.exports.sendMail = (req, res, next) => {
             html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = "http://localhost:3000/monSite/update_password" >réinitialisation</a></p>`
         }
         
-        .then( 
-            transporter.sendMail(mailOptions, (res) => {
-                return res.json({ message: userName +', nous traitons votre demande !' }).status(201)
-            })
-        )
-        .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+        transporter.sendMail(mailOptions) = {
+            message: userName +', nous traitons votre demande !' 
+        }
     })
     .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
 }
