@@ -111,7 +111,6 @@ module.exports.sendMail = (req, res, next) => {
         return res.json({ userSendError: 'Erreur d\'authentification !' }).status(401);
     } 
     else {
-
         const transporter = nodeMailer.createTransport({
             host: 'smtp-mail.outlook.com',
             secureConnection: false,
@@ -124,7 +123,7 @@ module.exports.sendMail = (req, res, next) => {
                 pass: process.env.PASSWORD
             }
         })
-
+        
         const mailOptions = {
             from: process.env.EMAIL,
             to: email,
