@@ -12,7 +12,7 @@ const validate = (req, res, next) => {
   const extractedErrors = [];
   errors.array().map((err) =>
     extractedErrors.push({
-      [err.param]: 'Le mot de passe doit faire au moins 6 caractères',
+      [err.param]: 'Le mot de passe doit faire au moins 8 caractères',
     })
   );
   return json({

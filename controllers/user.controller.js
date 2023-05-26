@@ -21,10 +21,6 @@ const mailValidator = require('email-validator');
 // Pour s'assurer que le password est valide
 const passwordValidator = require('password-validator');
 
-const mongoMask = require('mongo-mask');
-
-const session = require('express-session');
-
 // Création du regex (Sécurité)
 // Pour filtrer les chaînes de caractères et bannir les caractères non autorisés
 const regexUserName = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9]+)*$/;
@@ -48,26 +44,27 @@ module.exports.register = (req, res, next) => {
         return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
     } 
     else if (!mailValidator.validate(req.body.email)) {
-        return res.json({ mailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée 
-      } else if (!schema.validate(req.body.password)) {
-        return res.json({ passwordRegError: 'Le mot pass n\'est pas valide !' }).status(400); // Accès à la requête refusée       
-      } else {
-        bcrypt
-          .hash(req.body.password, 10) 
-          .then((hash) => {
-            const user = new User({
-              email: req.body.email,
-              password: hash,
-            }); // Create new user
-            user
-              .save() // Save user in DB
-              .then(() => res.status(201).json({ message: "Utilisateur créé !" }))
-              .catch((error) => res.status(400).json({ error }));
-          })
-          .catch((error) => res.status(501).json({ error }));
-      }
-    };
-
+        return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
+    } 
+    else if (!passwordSchema.validate(req.body.password)) {
+        return res.json({ passwordRegError: 'Le mot de passe doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial !' }).status(400); // Accès à la requête refusée
+    } 
+    else {
+        bcrypt.hash(req.body.password, 10)
+        .then(hash => {
+            const user = new UserModel({
+            userName: req.body.userName,  
+            email: req.body.email,
+            password: hash
+        });
+        user.save()
+        .then(() => res.json({  userId: user._id,
+                                message:  user.userName +', votre compte est crée !' }).status(200))
+        .catch(error => res.json({ userRegError: 'Pseudo et/ou email déjà utilisés!' }).status(500));
+        })
+    .catch(error => res.json({ userRegError: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+    }
+}
 
 
 
