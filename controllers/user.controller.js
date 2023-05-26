@@ -23,10 +23,6 @@ const passwordValidator = require("password-validator");
 
 // Création du regex (Sécurité)
 // Pour filtrer les chaînes de caractères et bannir les caractères non autorisés
-// const regexEmail = /^\w+([\.-_]?\w+)*@\w+([\.-_]?\w+)*(\.\w{2,3})+$/;
-
-// Création du regex (Sécurité)
-// Pour filtrer les chaînes de caractères et bannir les caractères non autorisés
 const regexUserName = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9]+)*$/;
 
 // Création d'un schéma de validation pour le password

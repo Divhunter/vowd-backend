@@ -2,8 +2,6 @@
 const express = require('express');
 const router = express.Router();
 const userCtrl = require('../controllers/user.controller');
-const emailValidator = require('../middleware/emailValidator');
-const passwordValidator = require('../middleware/passwordValidator');
 const limit = require('../middleware/logLimit');
 const { userValidationRules, validate } = require("../middleware/validator");
 const { route } = require('./post.routes');
