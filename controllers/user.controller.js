@@ -131,10 +131,12 @@ module.exports.sendMail = (req, res, next) => {
         .then(valid => { 
             if (!valid) {
             return res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(400)
+            } 
+            else {
+                transporter.sendMail(mailOptions, error => { 
+                return res.json({ message: userName +', nous traitons votre demande !' }).status(201)
+                })
             }
-            transporter.sendMail(mailOptions, error => { 
-            return res.json({ message: userName +', nous traitons votre demande !' }).status(201)
-             })
         })
         .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
     })
