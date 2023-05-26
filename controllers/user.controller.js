@@ -48,16 +48,12 @@ module.exports.register = (req, res, next) => {
         return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
     } 
     else if (!mailValidator.validate(req.body.email)) {
-        throw {
-          error: "L'adresse mail n'est pas valide !", // Making sure the amil is an email
-        };
+        return res.json({ mailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée 
       } else if (!schema.validate(req.body.password)) {
-        throw {
-          error: "Le mot pass n'est pas valide !", // Making sure the password respect the schema
-        };
+        return res.json({ passwordRegError: 'Le mot pass n\'est pas valide !' }).status(400); // Accès à la requête refusée       
       } else {
         bcrypt
-          .hash(req.body.password, 10) // Hashing and salting the password
+          .hash(req.body.password, 10) 
           .then((hash) => {
             const user = new User({
               email: req.body.email,
