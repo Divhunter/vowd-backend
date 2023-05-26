@@ -94,9 +94,9 @@ module.exports.login = (req, res, next) => {
               );
             res.status(200).json({ userId: user._id, token: newToken });
         })
-        .catch(error => res.json({ errorLogUnknown: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+        .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
     })
-    .catch(error => res.json({ errorLogUnknown: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+    .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
 }
 
 //=========================================================================================
@@ -139,6 +139,7 @@ module.exports.sendMail = (req, res, next) => {
             })
         };
     })
+    .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
 }
 
 
