@@ -123,18 +123,16 @@ module.exports.sendMail = (req, res, next) => {
         html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = "http://localhost:3000/monSite/update_password" >réinitialisation</a></p>`
     }
 
-    const userName = req.body.userName
-    const email = req.body.email
-    const verifUser = { userName: userName, email: email }
-    UserModel.findOne(verifUser) 
-
     transporter.sendMail(mailOptions, (error, info) => {
-        if (!verifUser) {
-            return res.json({ userSendError: 'Ce compte d\'utilisateur n\'existe pas !' }).status(401);
-        } 
-        else {
-            return res.json({ messageSend: userName +', nous traitons votre demande !' }).status(201)
-        };
+        UserModel.findOne({ userName: req.body.userName, email: req.body.email })
+            .then(user => {
+            if (!user) {
+                return res.json({ userLogError: 'Ce compte d\'utilisateur n\'existe pas !' }).status(401);
+            }
+            else {
+                return res.json({ messageSend: userName +', nous traitons votre demande !' }).status(201)
+            };
+        })
     })
 }
 
