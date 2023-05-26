@@ -105,7 +105,7 @@ module.exports.login = (req, res, next) => {
 module.exports.sendMail = (req, res, next) => {
     const userName = req.body.userName
     const email = req.body.email
-    const verifUser = { userName: userName, email: email }
+    const verifUser = [userName, email]
     UserModel.findOne(verifUser) 
     if (!verifUser) {
         return res.json({ userSendError: 'Ce compte d\'utilisateur n\'existe pas !' }).status(401);
