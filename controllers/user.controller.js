@@ -19,7 +19,8 @@ const mailValidator = require("email-validator");
 
 // Importation de passwordValidator (Sécurité)
 // Pour s'assurer que le password est valide
-const passwordValidator = require("password-validator");
+//const passwordValidator = require("password-validator");
+const passwordValidator = require('../middleware/passwordValidator');
 
 // Création du regex (Sécurité)
 // Pour filtrer les chaînes de caractères et bannir les caractères non autorisés
@@ -30,7 +31,7 @@ const regexEmail = /^\w+([\.-_]?\w+)*@\w+([\.-_]?\w+)*(\.\w{2,3})+$/;
 const regexUserName = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9]+)*$/;
 
 // Création d'un schéma de validation pour le password
-const passwordSchema = new passwordValidator();
+/*const passwordSchema = new passwordValidator();
 passwordSchema
 .is().min(8)            // Minimum 8 caractères
 .is().max(20)           // Maximum 20 caractères
@@ -39,7 +40,7 @@ passwordSchema
 .has().digits()         // Requière au moins un chiffre
 .has().symbols()        // Requière au moins un caractère spécial
 .has().not().spaces()   // Espace blanc non autorisé
-.is().not().oneOf(['Passw0rd', 'Password123', 'Azerty123']); 
+.is().not().oneOf(['Passw0rd', 'Password123', 'Azerty123']); */
 
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
@@ -50,7 +51,7 @@ module.exports.register = (req, res, next) => {
     else if (!regexEmail.test(req.body.email)) {
         return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
     } 
-    else if (!passwordSchema.validate(req.body.password)) {
+    else if (!passwordValidator.validate(req.body.password)) {
         return res.json({ passwordRegError: 'Le mot de passe doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial !' }).status(400); // Accès à la requête refusée
     } 
     else {
@@ -85,14 +86,12 @@ module.exports.login = (req, res, next) => {
             if (!valid) {
                 return res.json({ passwordLogError: 'Mot de passe incorrecte !' }).status(401);
             }
-            res.status(200).json({
-                userId: user._id,
-                token: jwt.sign(
-                    { userId: user._id },
-                    'RANDOM_TOKEN_SECRET',
-                    { expiresIn: '24h'}
-                )
-            });
+            const newToken = jwt.sign(
+                { userId: user._id },
+                process.env.JWT_SECRET_TOKEN,
+                { expiresIn: "24h" }
+              );
+            res.status(200).json({ userId: user._id, token: newToken });
         })
         .catch(error => res.json({ errorLogUnknown: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
     })
