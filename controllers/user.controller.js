@@ -140,6 +140,7 @@ module.exports.sendMail = (req, res, next) => {
             })
         }
     })
+    .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
 }
 
 
