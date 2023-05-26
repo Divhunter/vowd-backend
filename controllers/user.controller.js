@@ -19,19 +19,18 @@ const mailValidator = require("email-validator");
 
 // Importation de passwordValidator (Sécurité)
 // Pour s'assurer que le password est valide
-//const passwordValidator = require("password-validator");
-const passwordValidator = require('../middleware/passwordValidator');
+const passwordValidator = require("password-validator");
 
 // Création du regex (Sécurité)
 // Pour filtrer les chaînes de caractères et bannir les caractères non autorisés
-const regexEmail = /^\w+([\.-_]?\w+)*@\w+([\.-_]?\w+)*(\.\w{2,3})+$/;
+// const regexEmail = /^\w+([\.-_]?\w+)*@\w+([\.-_]?\w+)*(\.\w{2,3})+$/;
 
 // Création du regex (Sécurité)
 // Pour filtrer les chaînes de caractères et bannir les caractères non autorisés
 const regexUserName = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9]+)*$/;
 
 // Création d'un schéma de validation pour le password
-/*const passwordSchema = new passwordValidator();
+const passwordSchema = new passwordValidator();
 passwordSchema
 .is().min(8)            // Minimum 8 caractères
 .is().max(20)           // Maximum 20 caractères
@@ -40,7 +39,7 @@ passwordSchema
 .has().digits()         // Requière au moins un chiffre
 .has().symbols()        // Requière au moins un caractère spécial
 .has().not().spaces()   // Espace blanc non autorisé
-.is().not().oneOf(['Passw0rd', 'Password123', 'Azerty123']); */
+.is().not().oneOf(['Passw0rd', 'Password123', 'Azerty123']); 
 
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
@@ -48,10 +47,10 @@ module.exports.register = (req, res, next) => {
     if (!regexUserName.test(req.body.userName)) {
         return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400); // Accès à la requête refusée 
     } 
-    else if (!regexEmail.test(req.body.email)) {
+    else if (!mailValidator.validate(req.body.email)) {
         return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400); // Accès à la requête refusée
     } 
-    else if (!passwordValidator.validate(req.body.password)) {
+    else if (!passwordSchema.validate(req.body.password)) {
         return res.json({ passwordRegError: 'Le mot de passe doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial !' }).status(400); // Accès à la requête refusée
     } 
     else {
