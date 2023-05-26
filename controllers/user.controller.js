@@ -13,21 +13,17 @@ const jwt = require('jsonwebtoken');
 // Pour envoyer un email
 const nodeMailer = require('nodemailer')
 
-// Importation de mailValidator (Sécurité)
-// Pour s'assurer que l'email et bien un email
-const mailValidator = require('email-validator');
-
-// Importation de passwordValidator (Sécurité)
-// Pour s'assurer que le password est valide
-const passwordValidator = require('password-validator');
+// Création du regex (Sécurité)
+// Pour validation de la chaîne de caractère relative à l'adresse mail 
+const regexEmail = /^\w+([\.-_]?\w+)*@\w+([\.-_]?\w+)*(\.\w{2,3})+$/;
 
 // Création du regex (Sécurité)
 // Pour filtrer les chaînes de caractères et bannir les caractères non autorisés
 const regexUserName = /^[a-zA-Zéèêîçôï0-9]+(?:['\s\-\.a-zA-Zéèêîçôï0-9]+)*$/;
 
 // Création d'un schéma de validation pour le password
-const passwordSchema = new passwordValidator();
-passwordSchema
+const passwordSchema = 
+schema
 .is().min(8)            // Minimum 8 caractères
 .is().max(20)           // Maximum 20 caractères
 .has().uppercase()      // Requière au moins une lettre majuscule
@@ -40,34 +36,36 @@ passwordSchema
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
-    if (!regexUserName.test(req.body.userName)) {
-        return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400);
-    } 
-    else if (!mailValidator.validate(req.body.email)) {
-        throw {
-        emailRegError: 'L\'adresse mail n\'est pas valide !'
+    UserModel.findOne({ userName: req.body.userName, email: req.body.email })
+    .then(user => {
+        if (user) {
+            return res.json({ userRegError: 'Pseudo et/ou email déjà utilisés !' }).status(400);
+        }
+        else if (!regexUserName.test(req.body.userName)) {
+            return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400);
         } 
-    }
-    else if (!passwordSchema.validate(req.body.password)) {
-        throw {
-        passwordRegError: 'Le mot de passe doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial !'
+        else if (!regexEmail.test(req.body.email)) {
+            return res.json({ userNameRegError: 'L\'adresse mail n\'est pas valide !' }).status(400);
         } 
-    }
-    else {
-        bcrypt.hash(req.body.password, 10)
-        .then(hash => {
-            const user = new UserModel({
-            userName: req.body.userName,  
-            email: req.body.email,
-            password: hash
-        });
-        user.save()
-        .then(() => res.json({  userId: user._id,
-                                message:  user.userName +', votre compte est crée !' }).status(200))
-        .catch(error => res.json({ userRegError: 'Pseudo et/ou email déjà utilisés!' }).status(500));
-        })
-    .catch(error => res.json({ userRegError: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
-    }
+        else if (!passwordSchema.validate(req.body.password)) {
+            return res.json({ passwordRegError:'Le mot de passe doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et un caractère spécial !' }).status(400);
+        }
+        else {
+            bcrypt.hash(req.body.password, 10)
+            .then(hash => {
+                const user = new UserModel({
+                userName: req.body.userName,  
+                email: req.body.email,
+                password: hash
+            });
+            user.save()
+            .then(() => res.json({  userId: user._id,
+                                    message:  user.userName +', votre compte est crée !' }).status(200))
+            .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+            })
+        .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+        }
+    })
 }
 
 

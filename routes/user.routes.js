@@ -3,11 +3,10 @@ const express = require('express');
 const router = express.Router();
 const userCtrl = require('../controllers/user.controller');
 const limit = require('../middleware/logLimit');
-const { userValidationRules, validate } = require("../middleware/validator");
 const { route } = require('./post.routes');
 
 // Réglage des contrôleurs
-router.post('/register', userValidationRules(), validate, userCtrl.register);
+router.post('/register', userCtrl.register);
 router.post('/login', limit.limiter, userCtrl.login);
 router.post('/sendMail', userCtrl.sendMail);
 router.post('/updatePassword', userCtrl.updatePassword);
