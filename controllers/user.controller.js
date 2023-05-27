@@ -124,17 +124,9 @@ module.exports.sendMail = (req, res, next) => {
     }
 
     transporter.sendMail(mailOptions, (error, info) => {
-        const userName = req.body.userName
-        const email = req.body.email
-        const verifUser = { userName: userName, email: email }
-        UserModel.findOne(verifUser)
-
         if (error) {
             return res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(400)
-        }
-        else if (!verifUser) {
-            return res.json({ userSendError: 'Erreur d\'authentification !' }).status(401);
-        }
+        } 
         else {
             return res.json({ messageSend: userName +', nous traitons votre demande !' }).status(201)
         };
