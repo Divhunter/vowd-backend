@@ -106,7 +106,7 @@ module.exports.sendMail = (req, res, next) => {
     UserModel.findOne({ userName: req.body.userName, email: req.body.email })
     .then(user => {
         if (user) {
-            const transporter = nodeMailer.createTransport({
+            {/*const transporter = nodeMailer.createTransport({
                 host: 'smtp-mail.outlook.com',
                 secureConnection: false,
                 port: 587,
@@ -123,7 +123,7 @@ module.exports.sendMail = (req, res, next) => {
                 to: email,
                 subject: 'Réinitialisation de mot de passe',
                 html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = "http://localhost:3000/monSite/update_password" >réinitialisation</a></p>`
-            });
+            });*/}
             return res.json({ messageSend: userName +', nous traitons votre demande !' }).status(201)
         }
         else {
