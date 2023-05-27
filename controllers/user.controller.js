@@ -126,14 +126,9 @@ module.exports.sendMail = (req, res, next) => {
                 html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = "http://localhost:3000/monSite/update_password" >réinitialisation</a></p>`
             }
 
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    return res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(400)
-                } 
-                else {
-                    return res.json({ messageSend: userName +', nous traitons votre demande !' }).status(201)
-                }
-            })
+            transporter.sendMail(mailOptions, (messageSend))
+            return res.json({ messageSend: userName +', nous traitons votre demande !' }).status(201)
+           
         }
         else {
             return res.json({ userSendError: 'Ce compte d\'utilisateur n\'existe pas !' }).status(401);
