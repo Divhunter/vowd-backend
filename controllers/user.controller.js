@@ -105,12 +105,6 @@ module.exports.login = (req, res, next) => {
 module.exports.sendMail = (req, res, next) => {
     UserModel.findOne({ userName: req.body.userName, email: req.body.email })
     .then(user => {
-        if (!user) {
-            return res.json({ userSendError: 'Ce compte d\'utilisateur n\'existe pas !' }).status(401);
-        }
-       
-    })
-    .then(user => {
         if (user) {
             const transporter = nodeMailer.createTransport({
                 host: 'smtp-mail.outlook.com',
@@ -138,8 +132,11 @@ module.exports.sendMail = (req, res, next) => {
                 } 
                 else {
                     return res.json({ messageSend: userName +', nous traitons votre demande !' }).status(201)
-                };
+                }
             })
+        }
+        else {
+            return res.json({ userSendError: 'Ce compte d\'utilisateur n\'existe pas !' }).status(401);
         }
     })
     .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
