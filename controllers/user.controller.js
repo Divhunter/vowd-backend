@@ -127,7 +127,7 @@ module.exports.sendMail = (req, res, next) => {
             }
 
             transporter.sendMail(mailOptions)
-            return res.json({ message: userName +', nous traitons votre demande !' }).status(201)
+            return res.json({ messageSend: userName +', nous traitons votre demande !' }).status(201)
         }
         else {
             return res.json({ userSendError: 'Ce compte d\'utilisateur n\'existe pas !' }).status(401);
