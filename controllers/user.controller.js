@@ -106,7 +106,7 @@ module.exports.sendMail = (req, res, next) => {
     UserModel.findOne({ userName: req.body.userName, email: req.body.email })
     .then(user => {
         if (!user) {
-            return res.json({ userLogError: 'Ce compte d\'utilisateur n\'existe pas !' }).status(401);
+            return res.json({ userSendError: 'Ce compte d\'utilisateur n\'existe pas !' }).status(401);
         }
         else {
             const transporter = nodeMailer.createTransport({
