@@ -103,36 +103,36 @@ module.exports.login = (req, res, next) => {
 // Relatif à l'envoi du mail d'authentification'
 
 module.exports.sendMail = (req, res, next) => {
-    const transporter = nodeMailer.createTransport({
-        host: 'smtp-mail.outlook.com',
-        secureConnection: false,
-        port: 587,
-        tls: {
-            ciphers:"SSLv3"
-        },
-        auth: {
-            user: process.env.EMAIL,
-            pass: process.env.PASSWORD
-        }
-    })
-
-    const mailOptions = {
-        from: process.env.EMAIL,
-        to: email,
-        subject: 'Réinitialisation de mot de passe',
-        html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = "http://localhost:3000/monSite/update_password" >réinitialisation</a></p>`
-    }
-
     UserModel.findOne({ userName: req.body.userName, email: req.body.email })
     .then(user => {
-        if (!user) {  
-            return res.json({ userSendError: 'Ce compte utilisateur n\'existe pas !' }).status(401);
-        } 
-        else {
+        if (user) {
+            const transporter = nodeMailer.createTransport({
+                host: 'smtp-mail.outlook.com',
+                secureConnection: false,
+                port: 587,
+                tls: {
+                    ciphers:"SSLv3"
+                },
+                auth: {
+                    user: process.env.EMAIL,
+                    pass: process.env.PASSWORD
+                }
+            })
+        
+            const mailOptions = {
+                from: process.env.EMAIL,
+                to: email,
+                subject: 'Réinitialisation de mot de passe',
+                html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = "http://localhost:3000/monSite/update_password" >réinitialisation</a></p>`
+            }
+
             transporter.sendMail(mailOptions)
-            return res.json({ messageSend: userName +', nous traitons votre demande !' }).status(201)
+            res.json({ messageSend: userName +', nous traitons votre demande !' }).status(201)
         }
-    })   
+        else {
+            return res.json({ userSendError: 'Ce compte d\'utilisateur n\'existe pas !' }).status(401);
+        }
+    })
     .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
 };
 
