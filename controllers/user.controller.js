@@ -87,12 +87,14 @@ module.exports.login = (req, res, next) => {
             if (!valid) {
                 return res.json({ passwordLogError: 'Mot de passe incorrecte !' }).status(401);
             }
-            const newToken = jwt.sign(
+            res.status(200).json({
+            userId: user._id,
+            token: jwt.sign(
                 { userId: user._id },
-                process.env.JWT_SECRET_TOKEN,
-                { expiresIn: "24h" }
-              );
-            res.status(200).json({ userId: user._id, token: newToken });
+                'RANDOM_TOKEN_SECRET',
+                { expiresIn: '24h'}
+                )
+            })
         })
         .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
     })
