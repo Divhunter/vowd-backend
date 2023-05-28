@@ -42,7 +42,7 @@ passwordSchema
 module.exports.register = (req, res, next) => {
     UserModel.findOne({ userName: req.body.userName, email: req.body.email })
     .then(user => {
-        if (user === user.userName || user === user.email) {
+        if (user === req.body.userName || user === req.body.email) {
             return res.json({ userRegError: 'Pseudo et/ou email déjà utilisés !' }).status(400);
         }
         else if (!regexUserName.test(req.body.userName)) {
