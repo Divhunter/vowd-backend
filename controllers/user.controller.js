@@ -103,32 +103,34 @@ module.exports.login = (req, res, next) => {
 // Relatif à l'envoi du mail d'authentification'
 
 module.exports.sendMail = (req, res, next) => {
-    UserModel.findOne({ userName: req.body.userName, email: req.body.email })
+    const email = req.body.email
+    const verifUser = { email: email }
+    UserModel.findOne(verifUser) 
     .then(user => {
         if (user) {
-            {/*const transporter = nodeMailer.createTransport({
-                host: 'smtp-mail.outlook.com',
-                secureConnection: false,
-                port: 587,
-                tls: {
-                    ciphers:"SSLv3"
-                },
-                auth: {
-                    user: process.env.EMAIL,
-                    pass: process.env.PASSWORD
-                }
+            const transporter = nodeMailer.createTransport({
+            host: 'smtp-mail.outlook.com',
+            secureConnection: false,
+            port: 587,
+            tls: {
+                ciphers:"SSLv3"
+            },
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.PASSWORD
+            }
             })
             transporter.sendMail({
                 from: process.env.EMAIL,
                 to: email,
                 subject: 'Réinitialisation de mot de passe',
-                html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = "http://localhost:3000/monSite/update_password" >réinitialisation</a></p>`
-            });*/}
-            return res.json({ messageSend: userName +', nous traitons votre demande !' }).status(201)
-        }
+                html: `<p>Bonjour, voici le lien pour réinitialiser votre mot de passe <a href = "http://localhost:3000/monSite/update_password" >réinitialisation</a></p>`
+            });
+            res.json({ messageSend: 'Nous traitons votre demande !' }).status(201)
+        } 
         else {
-            return res.json({ userSendError: 'Ce compte d\'utilisateur n\'existe pas !' }).status(401);
-        };
+            res.json({ userSendError: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500)
+        }
     })
     .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
 }
