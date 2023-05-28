@@ -103,8 +103,9 @@ module.exports.login = (req, res, next) => {
 // Relatif à l'envoi du mail d'authentification'
 
 module.exports.sendMail = (req, res, next) => {
+    const userName = req.body.userName
     const email = req.body.email
-    const verifUser = { email: email }
+    const verifUser = { userName: userName, email: email }
     UserModel.findOne(verifUser) 
     .then(user => {
         if (user) {
@@ -129,7 +130,7 @@ module.exports.sendMail = (req, res, next) => {
             res.json({ messageSend: 'Nous traitons votre demande !' }).status(201)
         } 
         else {
-            res.json({ userSendError: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500)
+            res.json({ userSendError: 'Ce compte d\'utilisateur n\'existe pas !' }).status(500)
         }
     })
     .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
