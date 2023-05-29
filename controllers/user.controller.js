@@ -119,22 +119,22 @@ module.exports.sendMail = (req, res, next) => {
     .then(user => {
         if (user) {
             const transporter = nodeMailer.createTransport({
-            host: 'smtp-mail.outlook.com',
-            secureConnection: false,
-            port: 587,
-            tls: {
-                ciphers:"SSLv3"
-            },
-            auth: {
-                user: process.env.EMAIL,
-                pass: process.env.PASSWORD
-            }
+                host: 'smtp-mail.outlook.com',
+                secureConnection: false,
+                port: 587,
+                tls: {
+                    ciphers:"SSLv3"
+                },
+                auth: {
+                    user: process.env.EMAIL,
+                    pass: process.env.PASSWORD
+                }
             })
             transporter.sendMail({
                 from: process.env.EMAIL,
                 to: email,
                 subject: 'Réinitialisation de mot de passe',
-                html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = '${process.env.CLIENT_URL}' >réinitialisation</a></p>`
+                html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = '${process.env.CLIENT_URL}/passord', user >réinitialisation</a></p>`
             });
             res.json({ messageSend: 'Nous traitons votre demande !' }).status(201)
         } 
