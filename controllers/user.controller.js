@@ -33,9 +33,9 @@ passwordSchema
 .has().uppercase()      // Requière au moins une lettre majuscule
 .has().lowercase()      // Requière au moins une lettre minuscule
 .has().digits()         // Requière au moins un chiffre
-.has().not().symbols()       // Caractères spéciaux non autorisés
+.has().not().symbols()  // Caractères spéciaux non autorisés
 .has().not().spaces()   // Espaces blancs non autorisés
-.is().not().oneOf(['Passw0rd', 'Password123', 'Azerty123']); //Mots de passe non valides
+.is().not().oneOf(['Passw0rd123', 'Password123', 'Azerty1234']); //Mots de passe non valides
 
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
@@ -114,8 +114,8 @@ module.exports.login = (req, res, next) => {
 module.exports.sendMail = (req, res, next) => {
     const userName = req.body.userName
     const email = req.body.email
-    const verifUser = { userName: userName, email: email }
-    UserModel.findOne(verifUser) 
+    const userId = req.body._id
+    UserModel.findOne({ userName: userName, email: email })
     .then(user => {
         if (user) {
             const transporter = nodeMailer.createTransport({
@@ -134,7 +134,7 @@ module.exports.sendMail = (req, res, next) => {
                 from: process.env.EMAIL,
                 to: email,
                 subject: 'Réinitialisation de mot de passe',
-                html: `<p>Bonjour, voici le lien pour réinitialiser votre mot de passe <a href = "http://localhost:3000/monSite/update_password" >réinitialisation</a></p>`
+                html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = '${process.env.CLIENT_URL}/password' >réinitialisation</a></p>`
             });
             res.json({ messageSend: 'Nous traitons votre demande !' }).status(201)
         } 
