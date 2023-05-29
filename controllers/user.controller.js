@@ -134,7 +134,7 @@ module.exports.sendMail = (req, res, next) => {
                 from: process.env.EMAIL,
                 to: email,
                 subject: 'Réinitialisation de mot de passe',
-                html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = '${req.headers.host}/password' >réinitialisation</a></p>`
+                html: `<p>Bonjour ${userName}, voici le lien pour réinitialiser votre mot de passe <a href = '${process.env.CLIENT_URL}/password/${userId}', user >réinitialisation</a></p>`
             });
             res.json({ messageSend: 'Nous traitons votre demande !' }).status(201)
         } 
