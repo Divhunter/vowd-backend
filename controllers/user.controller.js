@@ -33,8 +33,8 @@ passwordSchema
 .has().uppercase()      // Requière au moins une lettre majuscule
 .has().lowercase()      // Requière au moins une lettre minuscule
 .has().digits()         // Requière au moins un chiffre
-.has().symbols(1)       // Requière au moins un caractère spécial
-.has().not().spaces()   // Espace blanc non autorisé
+.has().not().symbols()       // Caractères spéciaux non autorisés
+.has().not().spaces()   // Espaces blancs non autorisés
 .is().not().oneOf(['Passw0rd', 'Password123', 'Azerty123']); //Mots de passe non valides
 
 //=========================================================================================
@@ -59,7 +59,7 @@ module.exports.register = (req, res, next) => {
             return res.json({ emailRegError: 'L\'adresse mail n\'est pas valide !' }).status(400);
         } 
         else if (!passwordSchema.validate(req.body.password)) {
-            return res.json({ passwordRegError:'Le mot de passe doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et un seul caractère spécial !' }).status(400);
+            return res.json({ passwordRegError:'Le mot de passe doit contenir 8 à 20 caractères dont au moins une lettre majuscule, une lettre minuscule, un chiffre, et aucun caractère spécial !' }).status(400);
         }
         else {
             bcrypt.hash(req.body.password, 10)
