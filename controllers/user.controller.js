@@ -40,12 +40,19 @@ passwordSchema
 //=========================================================================================
 // Relatif à la création d'un compte utilisateur
 module.exports.register = (req, res, next) => {
-    UserModel.findOne({ userName: req.body.userName, email: req.body.email })
-    .then(user => {
-        if (user) {
+    UserModel.findOne({ userName: req.body.userName })
+    .then(verifName => {
+        if (verifName) {
             return res.json({ userRegError: 'Pseudo et/ou email déjà utilisés !' }).status(400);
         } 
-        else if (!regexUserName.test(req.body.userName)) {
+        UserModel.findOne({ email: req.body.email })
+        .then(verifEmail => {
+            if (verifEmail) {
+                return res.json({ userRegError: 'Pseudo et/ou email déjà utilisés !' }).status(400); 
+            }
+        })
+        .catch(error => res.json({ error: 'Une erreur inattendue est survenue, veuillez réesayer ulterieurement !' }).status(500));
+        if (!regexUserName.test(req.body.userName)) {
             return res.json({ userNameRegError: 'Votre nom d\'utilisateur doit contenir des caractères valides !' }).status(400);
         } 
         else if (!regexEmail.test(req.body.email)) {
